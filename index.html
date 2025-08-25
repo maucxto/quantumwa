@@ -403,6 +403,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            position: relative;
         }
 
         .chart-title {
@@ -580,6 +581,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .modal-title {
@@ -593,10 +595,22 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--text-primary);
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
         }
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .form-label {
@@ -614,11 +628,13 @@
             background: var(--card-bg);
             color: var(--text-primary);
             font-size: 16px;
+            transition: var(--transition);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
         }
 
         .btn {
@@ -785,6 +801,8 @@
             padding: 30px;
             height: 100vh;
             background: var(--gradient-main);
+            position: relative;
+            z-index: 1;
         }
 
         .login-card {
@@ -795,6 +813,8 @@
             max-width: 400px;
             box-shadow: var(--shadow-hover);
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .login-logo {
@@ -877,7 +897,7 @@
             height: 200px;
             bottom: 50px;
             left: -100px;
-            background: var(--gradient-accent);
+            background: var(--accent);
         }
 
         /* Simple chart styles */
@@ -897,253 +917,6 @@
         .chart-area {
             fill: url(#chart-gradient);
             opacity: 0.3;
-        }
-
-        /* Search bar */
-        .search-bar {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 16px;
-        }
-
-        .search-input:focus {
-            outline: none;
-        }
-
-        .search-icon {
-            color: var(--text-secondary);
-        }
-
-        /* Asset details modal */
-        .asset-details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .detail-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .detail-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        /* Notification center */
-        .notification-center {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100vh;
-            background: var(--card-bg);
-            z-index: 1003;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .notification-center.open {
-            right: 0;
-        }
-
-        .notification-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .notification-item {
-            padding: 15px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            margin-bottom: 10px;
-            border-left: 4px solid var(--primary);
-            box-shadow: var(--shadow);
-        }
-
-        .notification-item.success {
-            border-left-color: var(--success);
-        }
-
-        .notification-item.error {
-            border-left-color: var(--danger);
-        }
-
-        .notification-item.warning {
-            border-left-color: var(--warning);
-        }
-
-        /* MetaTrader API Section */
-        .metatrader-section {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .api-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--success);
-        }
-
-        .status-indicator.connected {
-            background: var(--success);
-        }
-
-        .status-indicator.disconnected {
-            background: var(--danger);
-        }
-
-        .status-indicator.connecting {
-            background: var(--warning);
-        }
-
-        .api-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        /* MT5 Connection Form */
-        .mt5-form {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        /* Academy Styles */
-        .academy-module {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        .academy-module h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .academy-module p {
-            margin-bottom: 15px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            margin: 15px 0;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .document-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .document-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .document-item:hover {
-            background: rgba(37, 117, 252, 0.05);
-            transform: translateX(4px);
-        }
-
-        .document-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--gradient-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            color: white;
-        }
-
-        .document-details {
-            flex: 1;
-        }
-
-        .document-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .document-info {
-            font-size: 12px;
-            color: var(--text-secondary);
         }
 
         /* Profile dropdown */
@@ -1193,6 +966,10 @@
 <body>
     <!-- Login Screen -->
     <div class="login-container" id="loginScreen">
+        <div class="bg-effects">
+            <div class="bg-circle circle-1"></div>
+            <div class="bg-circle circle-2"></div>
+        </div>
         <div class="login-card">
             <div class="login-logo">
                 <div class="logo-icon" style="width: 60px; height: 60px; margin: 0 auto;"></div>
@@ -1255,4 +1032,128 @@
                 <div class="balance-card">
                     <div class="balance-label">Balance Total</div>
                     <div class="balance-amount" id="balanceAmount">$124,852.40</div>
-                    <div class
+                    <div class="balance-mxn">
+                        <span id="balanceMXN">≈ $2,356,420.80 MXN</span>
+                        <button class="eye-toggle" id="eyeToggle" onclick="toggleBalance()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="action-btn" onclick="showSendModal()">
+                        <div class="action-icon"><i class="fas fa-paper-plane"></i></div>
+                        <div class="action-label">Enviar</div>
+                    </button>
+                    <button class="action-btn" onclick="showReceiveModal()">
+                        <div class="action-icon"><i class="fas fa-download"></i></div>
+                        <div class="action-label">Recibir</div>
+                    </button>
+                    <button class="action-btn" onclick="showSwapModal()">
+                        <div class="action-icon"><i class="fas fa-exchange-alt"></i></div>
+                        <div class="action-label">Convertir</div>
+                    </button>
+                    <button class="action-btn" onclick="showBuyModal()">
+                        <div class="action-icon"><i class="fas fa-plus"></i></div>
+                        <div class="action-label">Comprar</div>
+                    </button>
+                </div>
+
+                <div class="markets-tabs">
+                    <div class="market-tab active" onclick="switchMarket('crypto')">Crypto</div>
+                    <div class="market-tab" onclick="switchMarket('stocks')">Acciones</div>
+                    <div class="market-tab" onclick="switchMarket('etfs')">ETFs</div>
+                    <div class="market-tab" onclick="switchMarket('futures')">Futuros</div>
+                </div>
+                
+                <div class="section-title">
+                    <span>Tus Activos</span>
+                    <a href="#" class="see-all" onclick="refreshPortfolio()">Actualizar <i class="fas fa-sync-alt"></i></a>
+                </div>
+                
+                <div class="asset-list" id="crypto-assets">
+                    <!-- Los activos se cargarán dinámicamente desde el backend simulado -->
+                </div>
+
+                <div class="asset-list hidden" id="stocks-assets">
+                    <!-- Los activos se cargarán dinámicamente desde el backend simulado -->
+                </div>
+            </div>
+            
+            <!-- Charts Tab -->
+            <div class="tab-content" id="charts-tab">
+                <div class="section-title">
+                    <span>Gráficos de Trading</span>
+                </div>
+
+                <div class="trading-pair-selector">
+                    <div class="trading-pair active" onclick="switchTradingPair('BTCUSD')">BTC/USD</div>
+                    <div class="trading-pair" onclick="switchTradingPair('ETHUSD')">ETH/USD</div>
+                    <div class="trading-pair" onclick="switchTradingPair('AAPL')">AAPL</div>
+                    <div class="trading-pair" onclick="switchTradingPair('TSLA')">TSLA</div>
+                    <div class="trading-pair" onclick="switchTradingPair('SPY')">SPY</div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title" id="chart-title">BTC/USD</div>
+                        <div class="chart-timeframes">
+                            <div class="timeframe-btn active">1D</div>
+                            <div class="timeframe-btn">1W</div>
+                            <div class="timeframe-btn">1M</div>
+                            <div class="timeframe-btn">1Y</div>
+                        </div>
+                    </div>
+                    <div class="simple-chart" id="simple-price-chart">
+                        <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chart-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.3" />
+                                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path class="chart-line" id="chart-line" d="M0,200 L50,150 L100,170 L150,120 L200,140 L250,100 L300,130 L350,90 L400,110" />
+                            <path class="chart-area" id="chart-area" d="M0,200 L50,150 L100,170 L150,120 L200,140 L250,100 L300,130 L350,90 L400,110 L400,200 L0,200" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="trading-view">
+                    <div class="trading-controls">
+                        <div class="loading-overlay" id="tradeLoading">
+                            <div class="loader"></div>
+                        </div>
+                        <button class="trade-btn buy-btn" onclick="showTradeModal('buy')">Comprar</button>
+                        <button class="trade-btn sell-btn" onclick="showTradeModal('sell')">Vender</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" class="form-input" placeholder="0.0" id="trade-amount" oninput="calculateTradeTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Precio</label>
+                        <input type="text" class="form-input" id="current-price" value="$57,342.80" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total</label>
+                        <input type="text" class="form-input" id="trade-total" value="$0.00" readonly>
+                    </div>
+                    <button class="btn btn-primary" onclick="executeTrade()">Ejecutar Orden</button>
+                </div>
+            </div>
+            
+            <!-- Transactions Tab -->
+            <div class="tab-content" id="transactions-tab">
+                <div class="section-title">
+                    <span>Historial de Transacciones</span>
+                    <a href="#" class="see-all" onclick="loadTransactions()">Actualizar <i class="fas fa-sync-alt"></i></a>
+                </div>
+                
+                <div class="asset-list" id="transactions-list">
+                    <!-- Las transacciones se cargarán dinámicamente desde el backend simulado -->
+                </div>
+            </div>
+            
+            <!-- Academy Tab -->
+            <div class="tab-content" id="academy-tab">
+                <div
