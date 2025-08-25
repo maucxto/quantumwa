@@ -769,6 +769,7 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 5px;
+            color: var(--text-primary);
         }
 
         .profile-email {
@@ -1056,48 +1057,6 @@
             border: 1px solid var(--border);
         }
 
-        /* Profile Menu */
-        .profile-menu {
-            position: relative;
-        }
-
-        .profile-dropdown {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--shadow-hover);
-            width: 200px;
-            z-index: 1004;
-            overflow: hidden;
-            display: none;
-        }
-
-        .profile-dropdown.open {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        .dropdown-icon {
-            width: 20px;
-            text-align: center;
-        }
-
         /* Academy Styles */
         .academy-module {
             background: var(--card-bg);
@@ -1106,26 +1065,53 @@
             margin-bottom: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .academy-module h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
+        .academy-module:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .academy-module p {
+        .academy-module-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
+        }
+
+        .academy-module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        .academy-module-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .academy-module-content {
             color: var(--text-secondary);
             line-height: 1.6;
         }
 
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             border-radius: 12px;
             margin: 15px 0;
+            background: #000;
         }
 
         .video-container iframe {
@@ -1142,18 +1128,59 @@
             background: var(--card-bg);
             border-radius: 12px;
             margin-bottom: 10px;
-            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
         }
 
-        .reading-item h4 {
-            margin-bottom: 8px;
+        .reading-title {
+            font-weight: 600;
+            margin-bottom: 5px;
             color: var(--text-primary);
         }
 
-        .reading-item p {
-            margin-bottom: 0;
-            color: var(--text-secondary);
+        .reading-description {
             font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Profile Modal */
+        .profile-modal-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-modal-item:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .profile-modal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .profile-modal-text {
+            flex: 1;
+        }
+
+        .profile-modal-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .profile-modal-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -1200,21 +1227,9 @@
                 <button class="header-btn" onclick="syncData()">
                     <i class="fas fa-sync-alt"></i>
                 </button>
-                <div class="profile-menu">
-                    <button class="header-btn" onclick="toggleProfileMenu()">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profileDropdown">
-                        <div class="dropdown-item" onclick="switchTab('profile')">
-                            <div class="dropdown-icon"><i class="fas fa-user-circle"></i></div>
-                            <div>Mi Perfil</div>
-                        </div>
-                        <div class="dropdown-item" onclick="logout()">
-                            <div class="dropdown-icon"><i class="fas fa-sign-out-alt"></i></div>
-                            <div>Cerrar Sesión</div>
-                        </div>
-                    </div>
-                </div>
+                <button class="header-btn" onclick="showProfileModal()">
+                    <i class="fas fa-user"></i>
+                </button>
             </div>
         </div>
         
@@ -1260,53 +1275,61 @@
                 
                 <div class="section-title">
                     <span>Tus Activos</span>
-                    <a href="#" class="see-all" onclick="refreshPortfolio()">Actualizar <i class="fas fa-sync-alt"></i></a>
+                    <a href="#" class="see-all">Ver todos <i class="fas fa-chevron-right"></i></a>
                 </div>
                 
-                <div class="asset-list" id="crypto-assets">
-                    <!-- Los activos se cargarán dinámicamente desde el backend simulado -->
+                <div class="asset-list" id="assetList">
+                    <!-- Assets will be populated by JavaScript -->
                 </div>
-
-                <div class="asset-list hidden" id="stocks-assets">
-                    <!-- Los activos se cargarán dinámicamente desde el backend simulado -->
-                </div>
-            </div>
-            
-            <!-- Charts Tab -->
-            <div class="tab-content" id="charts-tab">
+                
                 <div class="section-title">
-                    <span>Gráficos de Trading</span>
-                </div>
-
-                <div class="trading-pair-selector">
-                    <div class="trading-pair active" onclick="switchTradingPair('BTCUSDT')">BTC/USDT</div>
-                    <div class="trading-pair" onclick="switchTradingPair('ETHUSDT')">ETH/USDT</div>
-                    <div class="trading-pair" onclick="switchTradingPair('SOLUSDT')">SOL/USDT</div>
-                    <div class="trading-pair" onclick="switchTradingPair('AAPLUSD')">AAPL/USD</div>
-                    <div class="trading-pair" onclick="switchTradingPair('TSLAUSD')">TSLA/USD</div>
+                    <span>Gráfico BTC/USD</span>
+                    <a href="#" class="see-all">1D <i class="fas fa-chevron-down"></i></a>
                 </div>
                 
                 <div class="chart-container">
                     <div class="chart-header">
-                        <div class="chart-title" id="chartTitle">BTC/USDT</div>
+                        <div class="chart-title">Bitcoin</div>
                         <div class="chart-timeframes">
-                            <button class="timeframe-btn active" onclick="switchTimeframe('1h')">1H</button>
-                            <button class="timeframe-btn" onclick="switchTimeframe('4h')">4H</button>
-                            <button class="timeframe-btn" onclick="switchTimeframe('1d')">1D</button>
-                            <button class="timeframe-btn" onclick="switchTimeframe('1w')">1W</button>
+                            <button class="timeframe-btn">1H</button>
+                            <button class="timeframe-btn active">1D</button>
+                            <button class="timeframe-btn">1S</button>
+                            <button class="timeframe-btn">1M</button>
                         </div>
                     </div>
-                    <div class="simple-chart">
-                        <svg viewBox="0 0 500 200" preserveAspectRatio="none" class="chart-svg">
-                            <defs>
-                                <linearGradient id="chart-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:var(--primary);stop-opacity:0.3" />
-                                    <stop offset="100%" style="stop-color:var(--primary);stop-opacity:0" />
-                                </linearGradient>
-                            </defs>
-                            <path d="M0,200 L50,150 L100,170 L150,120 L200,130 L250,100 L300,140 L350,90 L400,110 L450,70 L500,80 L500,200 Z" class="chart-area" />
-                            <path d="M0,200 L50,150 L100,170 L150,120 L200,130 L250,100 L300,140 L350,90 L400,110 L450,70 L500,80" class="chart-line" />
-                        </svg>
+                    <div class="chart-canvas" id="btcChart">
+                        <!-- Chart will be drawn by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trading Tab -->
+            <div class="tab-content" id="trading-tab">
+                <div class="section-title">
+                    <span>Trading</span>
+                </div>
+                
+                <div class="trading-pair-selector">
+                    <div class="trading-pair active">BTC/USD</div>
+                    <div class="trading-pair">ETH/USD</div>
+                    <div class="trading-pair">SOL/USD</div>
+                    <div class="trading-pair">AAPL</div>
+                    <div class="trading-pair">TSLA</div>
+                    <div class="trading-pair">SPY</div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">BTC/USD - $42,350.60</div>
+                        <div class="chart-timeframes">
+                            <button class="timeframe-btn">1H</button>
+                            <button class="timeframe-btn active">1D</button>
+                            <button class="timeframe-btn">1S</button>
+                            <button class="timeframe-btn">1M</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas" id="tradingChart">
+                        <!-- Trading chart will be drawn by JavaScript -->
                     </div>
                 </div>
                 
@@ -1321,12 +1344,22 @@
                     
                     <div class="form-group">
                         <label class="form-label">Cantidad</label>
-                        <input type="number" class="form-input" placeholder="0.00" id="tradeAmount">
+                        <input type="number" class="form-input" placeholder="0.00" value="0.1">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Precio de mercado</label>
-                        <input type="text" class="form-input" id="marketPrice" value="$68,423.10" readonly>
+                        <label class="form-label">Precio de Entrada</label>
+                        <input type="number" class="form-input" placeholder="0.00" value="42350.60">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Stop Loss</label>
+                        <input type="number" class="form-input" placeholder="0.00" value="41500.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Take Profit</label>
+                        <input type="number" class="form-input" placeholder="0.00" value="44000.00">
                     </div>
                 </div>
             </div>
@@ -1336,168 +1369,303 @@
                 <div class="section-title">
                     <span>Quantum Academy</span>
                 </div>
-
+                
                 <div class="academy-module">
-                    <h3>Método Quantum</h3>
-                    <p>El Método Quantum es un sistema de inversión revolucionario que combina análisis técnico cuantitativo con inteligencia artificial para identificar oportunidades de inversión en los mercados financieros.</p>
-                    <p>Nuestro método se basa en tres pilares fundamentales:</p>
-                    <ul style="margin-left: 20px; margin-bottom: 15px; color: var(--text-secondary);">
-                        <li>Análisis de datos en tiempo real</li>
-                        <li>Algoritmos predictivos de machine learning</li>
-                        <li>Gestión inteligente del riesgo</li>
-                    </ul>
-                </div>
-
-                <div class="academy-module">
-                    <h3>¿Qué aprenderás?</h3>
-                    <p>En Quantum Academy te enseñaremos desde los conceptos básicos de trading e inversión hasta estrategias avanzadas de gestión de portafolio.</p>
-                    <p>Nuestro programa de aprendizaje incluye:</p>
-                    <ul style="margin-left: 20px; margin-bottom: 15px; color: var(--text-secondary);">
-                        <li>Fundamentos de los mercados financieros</li>
-                        <li>Análisis técnico y chartismo</li>
-                        <li>Análisis fundamental de activos</li>
-                        <li>Estrategias de trading cuantitativo</li>
-                        <li>Gestión de riesgo y psicología del trading</li>
-                    </ul>
-                </div>
-
-                <div class="academy-module">
-                    <h3>Videos Educativos</h3>
-                    <p>A continuación un video introductorio sobre trading con el método Quantum:</p>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/6jZVsr7q0zI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="academy-module-header">
+                        <div class="academy-module-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <div class="academy-module-title">Método Quantum</div>
+                    </div>
+                    <div class="academy-module-content">
+                        <p>El Método Quantum es un sistema de trading integral que combina análisis técnico, fundamental y sentimiento del mercado para identificar oportunidades de inversión con alto potencial de rentabilidad.</p>
+                        <p>Nuestro enfoque se basa en 3 pilares fundamentales: Momentum, Valor y Sentimiento, aplicados a través de algoritmos propietarios que analizan millones de puntos de datos en tiempo real.</p>
                     </div>
                 </div>
-
+                
                 <div class="academy-module">
-                    <h3>Lecturas Recomendadas</h3>
-                    <div class="reading-item">
-                        <h4>Introducción al Análisis Técnico</h4>
-                        <p>Una guía completa para entender los patrones gráficos, indicadores técnicos y herramientas de análisis para operar en los mercados.</p>
+                    <div class="academy-module-header">
+                        <div class="academy-module-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="academy-module-title">Lo que Aprenderás</div>
                     </div>
-                    <div class="reading-item">
-                        <h4>Estrategias de Gestión de Riesgo</h4>
-                        <p>Aprende a proteger tu capital con técnicas profesionales de gestión de riesgo y position sizing.</p>
+                    <div class="academy-module-content">
+                        <p>Nuestro programa educativo está diseñado para transformarte de principiante a trader competente en 12 semanas. Aprenderás:</p>
+                        <ul style="padding-left: 20px; margin: 10px 0;">
+                            <li>Análisis técnico y chartismo</li>
+                            <li>Gestión de riesgo y capital</li>
+                            <li>Psicología del trading</li>
+                            <li>Estrategias de entrada y salida</li>
+                            <li>Uso de indicadores avanzados</li>
+                            <li>Automatización de estrategias</li>
+                        </ul>
                     </div>
-                    <div class="reading-item">
-                        <h4>Psicología del Trader</h4>
-                        <p>Domina el componente psicológico del trading y evita los errores emocionales más comunes.</p>
+                </div>
+                
+                <div class="academy-module">
+                    <div class="academy-module-header">
+                        <div class="academy-module-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="academy-module-title">Videos Educativos</div>
+                    </div>
+                    <div class="academy-module-content">
+                        <p>Accede a nuestra biblioteca de videos educativos con lecciones paso a paso, análisis de mercado en tiempo real y entrevistas con traders profesionales.</p>
+                        
+                        <div class="video-container">
+                            <!-- Simulación de video de YouTube -->
+                            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#1a1a1a; color:white;">
+                                <div style="text-align:center;">
+                                    <i class="fas fa-play-circle" style="font-size:48px; margin-bottom:10px;"></i>
+                                    <p>Video: Introducción al Trading con Quantum</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top:15px; font-size:14px; text-align:center;">
+                            <a href="#" style="color:var(--primary);">Ver más videos</a>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="academy-module">
+                    <div class="academy-module-header">
+                        <div class="academy-module-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="academy-module-title">Lecturas</div>
+                    </div>
+                    <div class="academy-module-content">
+                        <p>Amplía tus conocimientos con nuestra colección de lecturas esenciales, desde conceptos básicos hasta estrategias avanzadas.</p>
+                        
+                        <div class="reading-item">
+                            <div class="reading-title">Análisis Técnico para Principiantes</div>
+                            <div class="reading-description">Guía completa para entender gráficos e indicadores técnicos</div>
+                        </div>
+                        
+                        <div class="reading-item">
+                            <div class="reading-title">Gestión de Riesgo en el Trading</div>
+                            <div class="reading-description">Cómo proteger tu capital y maximizar ganancias</div>
+                        </div>
+                        
+                        <div class="reading-item">
+                            <div class="reading-title">Psicología del Trader Exitoso</div>
+                            <div class="reading-description">Desarrolla la mentalidad adecuada para el trading consistente</div>
+                        </div>
+                        
+                        <p style="margin-top:15px; font-size:14px; text-align:center;">
+                            <a href="#" style="color:var(--primary);">Ver todas las lecturas</a>
+                        </p>
                     </div>
                 </div>
             </div>
             
-            <!-- MT5 Tab -->
-            <div class="tab-content" id="mt5-tab">
+            <!-- Portfolio Tab -->
+            <div class="tab-content" id="portfolio-tab">
                 <div class="section-title">
-                    <span>Conexión MetaTrader 5</span>
+                    <span>Mi Portfolio</span>
+                    <a href="#" class="see-all">Historial <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Rendimiento del Portfolio</div>
+                        <div class="chart-timeframes">
+                            <button class="timeframe-btn">1D</button>
+                            <button class="timeframe-btn">1S</button>
+                            <button class="timeframe-btn active">1M</button>
+                            <button class="timeframe-btn">1A</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas" id="portfolioChart">
+                        <!-- Portfolio chart will be drawn by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <span>Distribución de Activos</span>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-canvas" id="allocationChart">
+                        <!-- Allocation chart will be drawn by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    <span>Transacciones Recientes</span>
+                    <a href="#" class="see-all">Ver todas <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="asset-list">
+                    <div class="asset-item">
+                        <div class="asset-icon" style="background: var(--success);">B</div>
+                        <div class="asset-details">
+                            <div class="asset-name">Compra de BTC</div>
+                            <div class="asset-amount">0.05 BTC · Hace 2 horas</div>
+                        </div>
+                        <div class="asset-value">
+                            <div class="asset-price">+$2,117.53</div>
+                            <div class="asset-change positive">Completado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="asset-item">
+                        <div class="asset-icon" style="background: var(--danger);">V</div>
+                        <div class="asset-details">
+                            <div class="asset-name">Venta de ETH</div>
+                            <div class="asset-amount">2.5 ETH · Ayer</div>
+                        </div>
+                        <div class="asset-value">
+                            <div class="asset-price">-$6,250.40</div>
+                            <div class="asset-change positive">Completado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="asset-item">
+                        <div class="asset-icon" style="background: var(--primary);">D</div>
+                        <div class="asset-details">
+                            <div class="asset-name">Depósito</div>
+                            <div class="asset-amount">Transferencia bancaria · Hace 3 días</div>
+                        </div>
+                        <div class="asset-value">
+                            <div class="asset-price">+$5,000.00</div>
+                            <div class="asset-change positive">Completado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settings-tab">
+                <div class="section-title">
+                    <span>Configuración</span>
                 </div>
                 
                 <div class="metatrader-section">
                     <div class="api-status">
-                        <div class="status-indicator connected" id="mt5Status"></div>
-                        <span id="mt5StatusText">Conectado a MT5</span>
+                        <div class="status-indicator connected"></div>
+                        <span>MetaTrader 5 Conectado</span>
                     </div>
+                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Conecta tu cuenta de MetaTrader 5 para operar directamente desde Quantum.</p>
                     
                     <div class="api-controls">
-                        <button class="trade-btn buy-btn" onclick="connectMT5()" id="connectBtn" style="display: none;">Conectar</button>
-                        <button class="trade-btn sell-btn" onclick="disconnectMT5()" id="disconnectBtn">Desconectar</button>
+                        <button class="btn btn-primary" style="padding: 12px;">Sincronizar Cuenta</button>
+                        <button class="btn" style="padding: 12px; background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border);">Desconectar</button>
                     </div>
                 </div>
                 
                 <div class="mt5-form">
                     <div class="form-group">
-                        <label class="form-label">Servidor MT5</label>
-                        <input type="text" class="form-input" value="QuantumMarkets-Live" id="mt5Server">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Número de cuenta</label>
-                        <input type="text" class="form-input" value="7008345" id="mt5Account">
+                        <label class="form-label">Número de Cuenta MT5</label>
+                        <input type="text" class="form-input" placeholder="Ingresa tu número de cuenta">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Contraseña</label>
-                        <input type="password" class="form-input" value="············" id="mt5Password">
+                        <input type="password" class="form-input" placeholder="Ingresa tu contraseña">
                     </div>
                     
-                    <button class="btn btn-primary" onclick="saveMT5Credentials()">Guardar Configuración</button>
+                    <div class="form-group">
+                        <label class="form-label">Servidor</label>
+                        <input type="text" class="form-input" value="QuantumMarkets-Live">
+                    </div>
+                    
+                    <button class="btn btn-primary">Conectar Cuenta</button>
                 </div>
                 
                 <div class="section-title">
-                    <span>Órdenes de MT5</span>
+                    <span>Preferencias</span>
                 </div>
                 
-                <div class="asset-list" id="mt5-orders">
-                    <!-- Las órdenes de MT5 se cargarán dinámicamente -->
-                </div>
-            </div>
-            
-            <!-- Profile Tab -->
-            <div class="tab-content" id="profile-tab">
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user"></i>
+                <div class="chart-container">
+                    <div class="form-group">
+                        <label class="form-label">Divisa Principal</label>
+                        <select class="form-input">
+                            <option>USD - Dólar Americano</option>
+                            <option>MXN - Peso Mexicano</option>
+                            <option>EUR - Euro</option>
+                            <option selected>USDT - Tether</option>
+                        </select>
                     </div>
-                    <h2 class="profile-name">Alejandro Rodríguez</h2>
-                    <p class="profile-email">alejandro@quantum.com</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tema</label>
+                        <select class="form-input">
+                            <option selected>Claro</option>
+                            <option>Oscuro</option>
+                            <option>Automático</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Idioma</label>
+                        <select class="form-input">
+                            <option selected>Español</option>
+                            <option>English</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Límite de Operación Diaria</label>
+                        <input type="number" class="form-input" placeholder="0.00" value="10000.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Notificaciones</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Alertas de Precio</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <span>Noticias del Mercado</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="section-title">
-                    <span>Configuración de Cuenta</span>
+                    <span>Seguridad</span>
                 </div>
                 
-                <div class="asset-list">
-                    <div class="asset-item" onclick="showModal('securityModal')">
-                        <div class="asset-icon" style="background: var(--accent);">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">Seguridad</div>
-                            <div class="asset-amount">Autenticación, contraseña, etc.</div>
-                        </div>
-                        <div class="asset-value">
-                            <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                <div class="chart-container">
+                    <div class="form-group">
+                        <label class="form-label">Autenticación de Dos Factores</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>2FA Habilitado</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
                         </div>
                     </div>
                     
-                    <div class="asset-item" onclick="showModal('notificationsModal')">
-                        <div class="asset-icon" style="background: var(--warning);">
-                            <i class="fas fa-bell"></i>
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">Notificaciones</div>
-                            <div class="asset-amount">Personaliza tus alertas</div>
-                        </div>
-                        <div class="asset-value">
-                            <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                    <div class="form-group">
+                        <label class="form-label">Bloqueo de App</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Requerir PIN</span>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
                         </div>
                     </div>
                     
-                    <div class="asset-item" onclick="showModal('preferencesModal')">
-                        <div class="asset-icon" style="background: var(--success);">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">Preferencias</div>
-                            <div class="asset-amount">Idioma, apariencia, etc.</div>
-                        </div>
-                        <div class="asset-value">
-                            <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Direcciones IP Confiables</label>
+                        <input type="text" class="form-input" placeholder="Añadir IP">
                     </div>
                     
-                    <div class="asset-item" onclick="showModal('helpModal')">
-                        <div class="asset-icon" style="background: var(--danger);">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                        <div class="asset-details">
-                            <div class="asset-name">Ayuda y Soporte</div>
-                            <div class="asset-amount">Centro de ayuda, contactarnos</div>
-                        </div>
-                        <div class="asset-value">
-                            <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
-                        </div>
-                    </div>
+                    <button class="btn" style="background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border); margin-top: 10px;">
+                        <i class="fas fa-shield-alt"></i> Verificar Dispositivo Actual
+                    </button>
                 </div>
             </div>
         </div>
@@ -1506,19 +1674,23 @@
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('home')">
                 <div class="nav-icon"><i class="fas fa-home"></i></div>
-                <div>Inicio</div>
+                <div class="nav-label">Inicio</div>
             </div>
-            <div class="nav-item" onclick="switchTab('charts')">
+            <div class="nav-item" onclick="switchTab('trading')">
                 <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
-                <div>Gráficos</div>
+                <div class="nav-label">Trading</div>
             </div>
             <div class="nav-item" onclick="switchTab('academy')">
                 <div class="nav-icon"><i class="fas fa-graduation-cap"></i></div>
-                <div>Academy</div>
+                <div class="nav-label">Academy</div>
             </div>
-            <div class="nav-item" onclick="switchTab('mt5')">
-                <div class="nav-icon"><i class="fas fa-plug"></i></div>
-                <div>MT5</div>
+            <div class="nav-item" onclick="switchTab('portfolio')">
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+                <div class="nav-label">Portfolio</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('settings')">
+                <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                <div class="nav-label">Ajustes</div>
             </div>
         </div>
         
@@ -1532,134 +1704,339 @@
             </div>
             
             <div class="notification-item success">
-                <div><strong>Compra exitosa</strong></div>
-                <div>Has comprado 0.05 BTC por $3,421.15</div>
-                <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 5px;">Hace 2 horas</div>
+                <strong>Operación Exitosa</strong>
+                <p>Has comprado 0.05 BTC por $2,117.53</p>
+                <small>Hace 2 horas</small>
             </div>
             
             <div class="notification-item">
-                <div><strong>Bienvenido a Quantum</strong></div>
-                <div>Tu cuenta ha sido verificada exitosamente</div>
-                <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 5px;">Ayer a las 14:30</div>
+                <strong>Depósito Recibido</strong>
+                <p>Se ha depositado $5,000.00 en tu cuenta</p>
+                <small>Ayer</small>
             </div>
             
             <div class="notification-item warning">
-                <div><strong>Actualización de seguridad</strong></div>
-                <div>Recomendamos activar la autenticación de dos factores</div>
-                <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 5px;">Hace 3 días</div>
+                <strong>Alerta de Precio</strong>
+                <p>BTC ha alcanzado $42,350.60</p>
+                <small>Hace 3 días</small>
+            </div>
+            
+            <div class="notification-item error">
+                <strong>Intento de Acceso</strong>
+                <p>Se detectó un intento de acceso desde un dispositivo nuevo</p>
+                <small>Hace 5 días</small>
             </div>
         </div>
         
-        <!-- Modals -->
+        <!-- Profile Modal -->
+        <div class="modal" id="profileModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Mi Perfil</h2>
+                    <button class="close-modal" onclick="hideProfileModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="profile-name">Juan Pérez</h2>
+                    <p class="profile-email">juan.perez@email.com</p>
+                </div>
+                
+                <div class="profile-modal-item">
+                    <div class="profile-modal-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="profile-modal-text">
+                        <div class="profile-modal-title">Editar Perfil</div>
+                        <div class="profile-modal-subtitle">Actualiza tu información personal</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                </div>
+                
+                <div class="profile-modal-item">
+                    <div class="profile-modal-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="profile-modal-text">
+                        <div class="profile-modal-title">Seguridad</div>
+                        <div class="profile-modal-subtitle">Gestiona contraseñas y 2FA</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                </div>
+                
+                <div class="profile-modal-item">
+                    <div class="profile-modal-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="profile-modal-text">
+                        <div class="profile-modal-title">Mis Direcciones</div>
+                        <div class="profile-modal-subtitle">Administra direcciones de wallets</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                </div>
+                
+                <div class="profile-modal-item">
+                    <div class="profile-modal-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="profile-modal-text">
+                        <div class="profile-modal-title">Historial de Transacciones</div>
+                        <div class="profile-modal-subtitle">Ver todas tus operaciones</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                </div>
+                
+                <div class="profile-modal-item" onclick="logout()">
+                    <div class="profile-modal-icon" style="background: var(--danger);">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <div class="profile-modal-text">
+                        <div class="profile-modal-title">Cerrar Sesión</div>
+                        <div class="profile-modal-subtitle">Salir de tu cuenta</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Send Modal -->
         <div class="modal" id="sendModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title">Enviar Activos</h2>
-                    <button class="close-modal" onclick="hideModal('sendModal')">&times;</button>
+                    <h2 class="modal-title">Enviar Fondos</h2>
+                    <button class="close-modal" onclick="hideSendModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label">Activo</label>
-                    <select class="form-input" id="sendAsset">
-                        <option>Bitcoin (BTC)</option>
-                        <option>Ethereum (ETH)</option>
-                        <option>Solana (SOL)</option>
-                        <option>USDT</option>
+                    <select class="form-input">
+                        <option>BTC - Bitcoin</option>
+                        <option>ETH - Ethereum</option>
+                        <option>USDT - Tether</option>
+                        <option>USD - Dólar Americano</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
-                    <label class="form-label">Dirección de destino</label>
+                    <label class="form-label">Dirección de Destino</label>
                     <input type="text" class="form-input" placeholder="Ingresa la dirección de wallet">
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label">Cantidad</label>
                     <input type="number" class="form-input" placeholder="0.00">
                 </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Comisión de Red</label>
+                    <select class="form-input">
+                        <option>Baja</option>
+                        <option selected>Media</option>
+                        <option>Alta</option>
+                    </select>
+                </div>
+                
                 <button class="btn btn-primary">Continuar</button>
             </div>
         </div>
         
+        <!-- Receive Modal -->
         <div class="modal" id="receiveModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title">Recibir Activos</h2>
-                    <button class="close-modal" onclick="hideModal('receiveModal')">&times;</button>
+                    <h2 class="modal-title">Recibir Fondos</h2>
+                    <button class="close-modal" onclick="hideReceiveModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="form-group" style="text-align: center;">
-                    <div style="width: 200px; height: 200px; background: #f0f0f0; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-qrcode" style="font-size: 120px; color: #ccc;"></i>
-                    </div>
-                </div>
+                
                 <div class="form-group">
-                    <label class="form-label">Dirección de recepción</label>
+                    <label class="form-label">Selecciona Activo</label>
+                    <select class="form-input">
+                        <option>BTC - Bitcoin</option>
+                        <option>ETH - Ethereum</option>
+                        <option>USDT - Tether</option>
+                        <option>USD - Dólar Americano</option>
+                    </select>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="width: 200px; height: 200px; background: #f0f0f0; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-qrcode" style="font-size: 100px;"></i>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 14px; color: var(--text-secondary);">Escanea este código QR para recibir fondos</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Dirección de Wallet</label>
                     <input type="text" class="form-input" value="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" readonly>
                 </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-primary" style="flex: 1;">Copiar</button>
-                    <button class="btn btn-primary" style="flex: 1;">Compartir</button>
-                </div>
+                
+                <button class="btn btn-primary">
+                    <i class="fas fa-copy"></i> Copiar Dirección
+                </button>
             </div>
         </div>
         
-        <!-- More modals would be defined here -->
+        <!-- Swap Modal -->
+        <div class="modal" id="swapModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Convertir Activos</h2>
+                    <button class="close-modal" onclick="hideSwapModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Desde</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select class="form-input" style="flex: 2;">
+                            <option>BTC - Bitcoin</option>
+                            <option>ETH - Ethereum</option>
+                            <option selected>USDT - Tether</option>
+                            <option>USD - Dólar Americano</option>
+                        </select>
+                        <input type="number" class="form-input" placeholder="0.00" style="flex: 1;">
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 10px 0;">
+                    <button class="header-btn" style="background: var(--primary-light);">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">A</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select class="form-input" style="flex: 2;">
+                            <option selected>BTC - Bitcoin</option>
+                            <option>ETH - Ethereum</option>
+                            <option>USDT - Tether</option>
+                            <option>USD - Dólar Americano</option>
+                        </select>
+                        <input type="number" class="form-input" placeholder="0.00" style="flex: 1;" value="0.0215">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo de Cambio</label>
+                    <input type="text" class="form-input" value="1 USDT = 0.000023 BTC" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Comisión</label>
+                    <input type="text" class="form-input" value="0.50 USDT" readonly>
+                </div>
+                
+                <button class="btn btn-primary">Confirmar Conversión</button>
+            </div>
+        </div>
+        
+        <!-- Buy Modal -->
+        <div class="modal" id="buyModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Comprar Cripto</h2>
+                    <button class="close-modal" onclick="hideBuyModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Selecciona Activo</label>
+                    <select class="form-input">
+                        <option>BTC - Bitcoin</option>
+                        <option>ETH - Ethereum</option>
+                        <option>SOL - Solana</option>
+                        <option>USDT - Tether</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Monto a Comprar</label>
+                    <input type="number" class="form-input" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Método de Pago</label>
+                    <select class="form-input">
+                        <option>Tarjeta de Crédito/Débito</option>
+                        <option>Transferencia Bancaria</option>
+                        <option>Saldo de Wallet</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Detalles de Precio</label>
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Precio por BTC:</span>
+                            <span>$42,350.60</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Comisión:</span>
+                            <span>$2.50 (1.5%)</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                            <span>Total:</span>
+                            <span>$105.88</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary">Continuar con la Compra</button>
+            </div>
+        </div>
+        
+        <!-- Notification Toast -->
+        <div class="notification" id="notificationToast" style="display: none;">
+            <i class="fas fa-check-circle" style="color: var(--success);"></i>
+            <span id="notificationText">Operación completada con éxito</span>
+        </div>
     </div>
 
     <script>
-        // Datos simulados para la aplicación
-        const cryptoAssets = [
-            { name: 'Bitcoin', symbol: 'BTC', amount: 0.25, value: 17210.75, change: 2.5, icon: 'B' },
-            { name: 'Ethereum', symbol: 'ETH', amount: 4.32, value: 8640.20, change: 1.8, icon: 'E' },
-            { name: 'Solana', symbol: 'SOL', amount: 42.5, value: 4250.00, change: -0.8, icon: 'S' },
-            { name: 'USD Tether', symbol: 'USDT', amount: 12500, value: 12500.00, change: 0.0, icon: 'U' },
-            { name: 'Cardano', symbol: 'ADA', amount: 1250, value: 625.00, change: 3.2, icon: 'A' }
-        ];
-        
-        const stocksAssets = [
-            { name: 'Apple Inc.', symbol: 'AAPL', amount: 10, value: 1540.50, change: 1.2, icon: 'A' },
-            { name: 'Tesla Inc.', symbol: 'TSLA', amount: 5, value: 1025.75, change: -2.3, icon: 'T' },
-            { name: 'Amazon.com Inc.', symbol: 'AMZN', amount: 2, value: 2738.90, change: 0.8, icon: 'A' },
-            { name: 'Microsoft Corp.', symbol: 'MSFT', amount: 8, value: 2192.40, change: 1.7, icon: 'M' }
-        ];
-        
-        const etfsAssets = [
-            { name: 'SPDR S&P 500', symbol: 'SPY', amount: 15, value: 4482.75, change: 0.5, icon: 'S' },
-            { name: 'Invesco QQQ Trust', symbol: 'QQQ', amount: 8, value: 2920.80, change: 0.9, icon: 'Q' }
-        ];
-        
-        const futuresAssets = [
-            { name: 'Gold Futures', symbol: 'GC', amount: 2, value: 3840.00, change: -0.3, icon: 'G' },
-            { name: 'Crude Oil Futures', symbol: 'CL', amount: 5, value: 3650.50, change: 1.8, icon: 'O' }
-        ];
-        
-        const mt5Orders = [
-            { symbol: 'EURUSD', type: 'Buy', volume: 0.5, price: 1.0872, sl: 1.0820, tp: 1.0950, profit: 32.50 },
-            { symbol: 'XAUUSD', type: 'Sell', volume: 0.3, price: 1920.50, sl: 1935.00, tp: 1900.00, profit: -18.75 },
-            { symbol: 'GBPJPY', type: 'Buy', volume: 0.4, price: 158.40, sl: 157.80, tp: 159.20, profit: 15.20 }
+        // Datos de ejemplo para activos
+        const assetsData = [
+            { name: 'Bitcoin', symbol: 'BTC', amount: 0.5, value: 21175.30, change: 2.5, positive: true },
+            { name: 'Ethereum', symbol: 'ETH', amount: 4.2, value: 6250.40, change: 1.8, positive: true },
+            { name: 'Solana', symbol: 'SOL', amount: 35, value: 350.60, change: -0.5, positive: false },
+            { name: 'Apple Inc.', symbol: 'AAPL', amount: 10, value: 450.25, change: 0.3, positive: true },
+            { name: 'Tesla Inc.', symbol: 'TSLA', amount: 5, value: 825.75, change: -1.2, positive: false },
+            { name: 'SPDR S&P 500', symbol: 'SPY', amount: 15, value: 1125.80, change: 0.8, positive: true }
         ];
         
         // Estado de la aplicación
-        let currentMarket = 'crypto';
         let currentTab = 'home';
         let balanceVisible = true;
-        let isMT5Connected = true;
+        let currentMarket = 'crypto';
         
-        // Inicialización cuando se carga la página
+        // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             renderAssets();
-            renderMT5Orders();
+            drawCharts();
         });
         
         // Función para iniciar sesión
         function login() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
-            showNotification('Sesión iniciada correctamente', 'success');
+            showNotification('Sesión iniciada correctamente');
         }
         
         // Función para cerrar sesión
         function logout() {
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('appContainer').style.display = 'none';
-            hideProfileMenu();
+            hideProfileModal();
         }
         
         // Función para cambiar de pestaña
@@ -1674,140 +2051,17 @@
                 item.classList.remove('active');
             });
             
-            // Mostrar la pestaña seleccionada
+            // Activar la pestaña seleccionada
             document.getElementById(`${tabName}-tab`).classList.add('active');
             
             // Activar el elemento de navegación correspondiente
-            const navItems = document.querySelectorAll('.nav-item');
-            if (tabName === 'home') navItems[0].classList.add('active');
-            if (tabName === 'charts') navItems[1].classList.add('active');
-            if (tabName === 'academy') navItems[2].classList.add('active');
-            if (tabName === 'mt5') navItems[3].classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.onclick.toString().includes(tabName)) {
+                    item.classList.add('active');
+                }
+            });
             
             currentTab = tabName;
-        }
-        
-        // Función para cambiar entre mercados
-        function switchMarket(market) {
-            currentMarket = market;
-            
-            // Actualizar pestañas de mercado
-            document.querySelectorAll('.market-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            
-            // Renderizar activos del mercado seleccionado
-            renderAssets();
-        }
-        
-        // Función para renderizar activos
-        function renderAssets() {
-            const assetsContainer = document.getElementById(`${currentMarket}-assets`);
-            let assetsToRender;
-            
-            switch(currentMarket) {
-                case 'crypto':
-                    assetsToRender = cryptoAssets;
-                    break;
-                case 'stocks':
-                    assetsToRender = stocksAssets;
-                    break;
-                case 'etfs':
-                    assetsToRender = etfsAssets;
-                    break;
-                case 'futures':
-                    assetsToRender = futuresAssets;
-                    break;
-                default:
-                    assetsToRender = cryptoAssets;
-            }
-            
-            // Limpiar contenedor
-            assetsContainer.innerHTML = '';
-            
-            // Ocultar todos los contenedores de activos
-            document.querySelectorAll('.asset-list').forEach(container => {
-                container.classList.add('hidden');
-            });
-            
-            // Mostrar contenedor de activos actual
-            assetsContainer.classList.remove('hidden');
-            
-            // Renderizar activos
-            assetsToRender.forEach(asset => {
-                const changeClass = asset.change > 0 ? 'positive' : (asset.change < 0 ? 'negative' : 'neutral');
-                const changeIcon = asset.change > 0 ? 'fas fa-caret-up' : (asset.change < 0 ? 'fas fa-caret-down' : '');
-                
-                const assetElement = document.createElement('div');
-                assetElement.className = 'asset-item';
-                assetElement.innerHTML = `
-                    <div class="asset-icon">${asset.icon}</div>
-                    <div class="asset-details">
-                        <div class="asset-name">${asset.name} <span style="color: var(--text-tertiary);">${asset.symbol}</span></div>
-                        <div class="asset-amount">${asset.amount} ${asset.symbol}</div>
-                    </div>
-                    <div class="asset-value">
-                        <div class="asset-price">$${asset.value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
-                        <div class="asset-change ${changeClass}">
-                            ${changeIcon ? `<i class="${changeIcon}"></i>` : ''}
-                            ${asset.change > 0 ? '+' : ''}${asset.change}%
-                        </div>
-                    </div>
-                `;
-                
-                assetsContainer.appendChild(assetElement);
-            });
-        }
-        
-        // Función para renderizar órdenes de MT5
-        function renderMT5Orders() {
-            const ordersContainer = document.getElementById('mt5-orders');
-            
-            // Limpiar contenedor
-            ordersContainer.innerHTML = '';
-            
-            // Renderizar órdenes
-            mt5Orders.forEach(order => {
-                const profitClass = order.profit > 0 ? 'positive' : (order.profit < 0 ? 'negative' : 'neutral');
-                const typeClass = order.type === 'Buy' ? 'positive' : 'negative';
-                
-                const orderElement = document.createElement('div');
-                orderElement.className = 'asset-item';
-                orderElement.innerHTML = `
-                    <div class="asset-icon" style="background: ${order.type === 'Buy' ? 'var(--success)' : 'var(--danger)'};">${order.type === 'Buy' ? 'B' : 'S'}</div>
-                    <div class="asset-details">
-                        <div class="asset-name">${order.symbol}</div>
-                        <div class="asset-amount">${order.type} | Vol: ${order.volume}</div>
-                    </div>
-                    <div class="asset-value">
-                        <div class="asset-price">$${order.price}</div>
-                        <div class="asset-change ${profitClass}">
-                            $${order.profit.toFixed(2)}
-                        </div>
-                    </div>
-                `;
-                
-                ordersContainer.appendChild(orderElement);
-            });
-        }
-        
-        // Función para mostrar notificación
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <div>${message}</div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Eliminar notificación después de 3 segundos
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
         }
         
         // Función para mostrar/ocultar balance
@@ -1818,7 +2072,7 @@
             
             if (balanceVisible) {
                 balanceAmount.textContent = '$••••••••';
-                balanceMXN.textContent = '≈ $•••••••• MXN';
+                balanceMXN.textContent = '≈ •••••••• MXN';
                 eyeToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
             } else {
                 balanceAmount.textContent = '$124,852.40';
@@ -1829,124 +2083,144 @@
             balanceVisible = !balanceVisible;
         }
         
-        // Funciones para mostrar modales
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
+        // Función para renderizar activos
+        function renderAssets() {
+            const assetList = document.getElementById('assetList');
+            assetList.innerHTML = '';
+            
+            assetsData.forEach(asset => {
+                const changeClass = asset.positive ? 'positive' : 'negative';
+                const changeIcon = asset.positive ? '▲' : '▼';
+                
+                const assetItem = document.createElement('div');
+                assetItem.className = 'asset-item';
+                assetItem.innerHTML = `
+                    <div class="asset-icon">${asset.symbol.charAt(0)}</div>
+                    <div class="asset-details">
+                        <div class="asset-name">${asset.name}</div>
+                        <div class="asset-amount">${asset.amount} ${asset.symbol}</div>
+                    </div>
+                    <div class="asset-value">
+                        <div class="asset-price">$${asset.value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                        <div class="asset-change ${changeClass}">${changeIcon} ${Math.abs(asset.change)}%</div>
+                    </div>
+                `;
+                
+                assetList.appendChild(assetItem);
+            });
         }
         
-        function hideModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        function showSendModal() {
-            showModal('sendModal');
-        }
-        
-        function showReceiveModal() {
-            showModal('receiveModal');
-        }
-        
-        function showSwapModal() {
-            showNotification('Funcionalidad de conversión en desarrollo', 'info');
-        }
-        
-        function showBuyModal() {
-            showNotification('Funcionalidad de compra en desarrollo', 'info');
-        }
-        
-        // Funciones para trading
-        function switchTradingPair(pair) {
-            document.querySelectorAll('.trading-pair').forEach(tab => {
+        // Función para cambiar mercado
+        function switchMarket(market) {
+            document.querySelectorAll('.market-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            event.target.classList.add('active');
+            document.querySelector(`.market-tab:nth-child(${market === 'crypto' ? 1 : market === 'stocks' ? 2 : market === 'etfs' ? 3 : 4})`).classList.add('active');
             
-            document.getElementById('chartTitle').textContent = pair;
-            
-            // Simular cambio de precio según el par
-            let newPrice;
-            if (pair === 'BTCUSDT') newPrice = '$68,423.10';
-            if (pair === 'ETHUSDT') newPrice = '$3,421.50';
-            if (pair === 'SOLUSDT') newPrice = '$142.80';
-            if (pair === 'AAPLUSD') newPrice = '$154.05';
-            if (pair === 'TSLAUSD') newPrice = '$205.15';
-            
-            document.getElementById('marketPrice').value = newPrice;
+            currentMarket = market;
+            renderAssets();
         }
         
-        function switchTimeframe(timeframe) {
-            document.querySelectorAll('.timeframe-btn').forEach(btn => {
-                btn.classList.remove('active');
+        // Función para dibujar gráficos
+        function drawCharts() {
+            // Simulación de gráficos con elementos SVG simples
+            const charts = ['btcChart', 'tradingChart', 'portfolioChart', 'allocationChart'];
+            
+            charts.forEach(chartId => {
+                const chart = document.getElementById(chartId);
+                if (chart) {
+                    chart.innerHTML = `
+                        <svg width="100%" height="100%" viewBox="0 0 500 200">
+                            <defs>
+                                <linearGradient id="chart-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.3" />
+                                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path class="chart-line" d="M0,150 C100,100 150,50 250,120 C350,190 400,80 500,130" />
+                            <path class="chart-area" d="M0,150 C100,100 150,50 250,120 C350,190 400,80 500,130 L500,200 L0,200 Z" />
+                        </svg>
+                    `;
+                }
             });
-            
-            event.target.classList.add('active');
-            
-            // Aquí normalmente se actualizaría el gráfico según el timeframe
-            showNotification(`Gráfico actualizado a timeframe ${timeframe}`, 'info');
         }
         
-        function executeTrade(type) {
-            const amount = document.getElementById('tradeAmount').value;
+        // Funciones para mostrar/ocultar modales
+        function showProfileModal() {
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+        
+        function hideProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+        
+        function showSendModal() {
+            document.getElementById('sendModal').style.display = 'flex';
+        }
+        
+        function hideSendModal() {
+            document.getElementById('sendModal').style.display = 'none';
+        }
+        
+        function showReceiveModal() {
+            document.getElementById('receiveModal').style.display = 'flex';
+        }
+        
+        function hideReceiveModal() {
+            document.getElementById('receiveModal').style.display = 'none';
+        }
+        
+        function showSwapModal() {
+            document.getElementById('swapModal').style.display = 'flex';
+        }
+        
+        function hideSwapModal() {
+            document.getElementById('swapModal').style.display = 'none';
+        }
+        
+        function showBuyModal() {
+            document.getElementById('buyModal').style.display = 'flex';
+        }
+        
+        function hideBuyModal() {
+            document.getElementById('buyModal').style.display = 'none';
+        }
+        
+        // Función para mostrar notificaciones
+        function showNotification(message) {
+            const notification = document.getElementById('notificationToast');
+            document.getElementById('notificationText').textContent = message;
+            notification.style.display = 'flex';
             
-            if (!amount || amount <= 0) {
-                showNotification('Ingresa una cantidad válida', 'error');
-                return;
-            }
-            
-            const loader = document.getElementById('tradingLoader');
-            loader.style.display = 'flex';
-            
-            // Simular tiempo de ejecución
             setTimeout(() => {
-                loader.style.display = 'none';
-                showNotification(`${type === 'buy' ? 'Compra' : 'Venta'} ejecutada por ${amount} ${document.getElementById('chartTitle').textContent.split('/')[0]}`, 'success');
-                document.getElementById('tradeAmount').value = '';
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Función para sincronizar datos
+        function syncData() {
+            const syncBtn = document.querySelector('.header-btn:nth-child(2)');
+            syncBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            
+            setTimeout(() => {
+                syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                showNotification('Datos sincronizados correctamente');
             }, 1500);
         }
         
-        // Funciones para MT5
-        function connectMT5() {
-            const statusIndicator = document.getElementById('mt5Status');
-            const statusText = document.getElementById('mt5StatusText');
-            const connectBtn = document.getElementById('connectBtn');
-            const disconnectBtn = document.getElementById('disconnectBtn');
+        // Función para ejecutar operación de trading
+        function executeTrade(type) {
+            const loader = document.getElementById('tradingLoader');
+            loader.style.display = 'flex';
             
-            statusIndicator.className = 'status-indicator connecting';
-            statusText.textContent = 'Conectando...';
-            
-            // Simular conexión
             setTimeout(() => {
-                statusIndicator.className = 'status-indicator connected';
-                statusText.textContent = 'Conectado a MT5';
-                connectBtn.style.display = 'none';
-                disconnectBtn.style.display = 'block';
-                isMT5Connected = true;
-                
-                showNotification('Conexión a MT5 establecida', 'success');
+                loader.style.display = 'none';
+                showNotification(`Operación de ${type === 'buy' ? 'compra' : 'venta'} ejecutada correctamente`);
             }, 2000);
         }
         
-        function disconnectMT5() {
-            const statusIndicator = document.getElementById('mt5Status');
-            const statusText = document.getElementById('mt5StatusText');
-            const connectBtn = document.getElementById('connectBtn');
-            const disconnectBtn = document.getElementById('disconnectBtn');
-            
-            statusIndicator.className = 'status-indicator';
-            statusText.textContent = 'Desconectado';
-            connectBtn.style.display = 'block';
-            disconnectBtn.style.display = 'none';
-            isMT5Connected = false;
-            
-            showNotification('Desconectado de MT5', 'info');
-        }
-        
-        function saveMT5Credentials() {
-            showNotification('Configuración de MT5 guardada', 'success');
-        }
-        
-        // Funciones para el centro de notificaciones
+        // Función para mostrar/ocultar centro de notificaciones
         function showNotificationCenter() {
             document.getElementById('notificationCenter').classList.add('open');
         }
@@ -1954,48 +2228,6 @@
         function hideNotificationCenter() {
             document.getElementById('notificationCenter').classList.remove('open');
         }
-        
-        // Función para sincronizar datos
-        function syncData() {
-            showNotification('Sincronizando datos...', 'info');
-            
-            // Simular sincronización
-            setTimeout(() => {
-                showNotification('Datos sincronizados correctamente', 'success');
-            }, 1000);
-        }
-        
-        // Función para actualizar portfolio
-        function refreshPortfolio() {
-            showNotification('Actualizando portfolio...', 'info');
-            
-            // Simular actualización
-            setTimeout(() => {
-                renderAssets();
-                showNotification('Portfolio actualizado', 'success');
-            }, 1000);
-        }
-        
-        // Función para mostrar/ocultar menú de perfil
-        function toggleProfileMenu() {
-            const dropdown = document.getElementById('profileDropdown');
-            dropdown.classList.toggle('open');
-        }
-        
-        function hideProfileMenu() {
-            const dropdown = document.getElementById('profileDropdown');
-            dropdown.classList.remove('open');
-        }
-        
-        // Cerrar menú de perfil al hacer clic fuera de él
-        document.addEventListener('click', function(event) {
-            const profileMenu = document.querySelector('.profile-menu');
-            const dropdown = document.getElementById('profileDropdown');
-            
-            if (!profileMenu.contains(event.target) && dropdown.classList.contains('open')) {
-                dropdown.classList.remove('open');
-            }
-        });
     </script>
 </body>
 </html>
