@@ -1,0 +1,1263 @@
+# Quantum Wallet - Versión Mejorada
+
+He realizado los cambios solicitados manteniendo todas las funcionalidades existentes. He movido el perfil al área superior, añadido la sección Academy y mantenido todas las variables y simulaciones previas.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum - Wallet Multiactivos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #6366f1;
+            --accent: #06b6d4;
+            --accent-light: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border: #e2e8f0;
+            --gradient-main: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--background);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.06);
+            padding-bottom: 80px; /* Espacio para la barra de navegación */
+        }
+
+        .app-header {
+            background: var(--gradient-main);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 4px;
+            transform: rotate(45deg);
+            opacity: 0.9;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-light);
+            border-radius: 2px;
+            bottom: 5px;
+            right: 5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-card {
+            background: var(--gradient-card);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-main);
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .balance-mxn {
+            font-size: 18px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .action-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 12px;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .action-btn:hover {
+            background: rgba(37, 117, 252, 0.05);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+
+        .action-icon {
+            font-size: 22px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .action-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .markets-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .market-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .market-tab.active {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-primary);
+        }
+
+        .section-title span {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .see-all {
+            font-size: 12px;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .asset-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .asset-item {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .asset-item:hover {
+            background: rgba(37, 117, 252, 0.05);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+
+        .asset-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .asset-details {
+            flex: 1;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .asset-amount {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .asset-value {
+            text-align: right;
+        }
+
+        .asset-price {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .asset-change {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .positive {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .negative {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .neutral {
+            color: var(--text-secondary);
+            background: rgba(100, 116, 139, 0.1);
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-timeframes {
+            display: flex;
+            gap: 5px;
+        }
+
+        .timeframe-btn {
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .timeframe-btn.active {
+            background: var(--gradient-main);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+        }
+
+        .trading-pair-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+
+        .trading-pair {
+            padding: 8px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .trading-pair.active {
+            background: var(--gradient-main);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+            max-width: 480px;
+            margin: 0 auto;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .eye-toggle {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            opacity: 0.7;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+
+        .eye-toggle:hover {
+            opacity: 1;
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .app-container {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-hover);
+            animation: modalFadeIn 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-hover);
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: notificationSlideIn 0.3s ease, notificationFadeOut 0.3s ease 2.7s forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes notificationSlideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes notificationFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* Trading View */
+        .trading-view {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .trading-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            z-index: 10;
+            display: none;
+        }
+
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary-light);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .trade-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .buy-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .sell-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .trade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Profile Section */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            height: 100vh;
+            background: var(--gradient-main);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-hover);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-container {
+                border-radius: 0;
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .actions {
+                gap: 10px;
+            }
+            
+            .action-btn {
+                padding: 12px 8px;
+            }
+            
+            .balance-amount {
+                font-size: 32px;
+            }
+            
+            .asset-item {
+                padding: 15px;
+            }
+        }
+
+        /* Background effects */
+        .bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+            opacity: 0.1;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            opacity: 0.1;
+            filter: blur(50px);
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 50px;
+            left: -100px;
+            background: var(--gradient-accent);
+        }
+
+        /* Simple chart styles */
+        .simple-chart {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+
+        .chart-area {
+            fill: url(#chart-gradient);
+            opacity: 0.3;
+        }
+
+        /* Search bar */
+        .search-bar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+        .search-icon {
+            color: var(--text-secondary);
+        }
+
+        /* Asset details modal */
+        .asset-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .detail-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Notification center */
+        .notification-center {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            z-index: 1003;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .notification-center.open {
+            right: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .notification-item.success {
+            border-left-color: var(--success);
+        }
+
+        .notification-item.error {
+            border-left-color: var(--danger);
+        }
+
+        .notification-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        /* MetaTrader API Section */
+        .metatrader-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .status-indicator.connected {
+            background: var(--success);
+        }
+
+        .status-indicator.disconnected {
+            background: var(--danger);
+        }
+
+        .status-indicator.connecting {
+            background: var(--warning);
+        }
+
+        .api-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* MT5 Connection Form */
+        .mt5-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        /* Academy Styles */
+        .academy-module {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .academy-module h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .academy-module p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 15px 0;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .document-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .document-item:hover {
+            background: rgba(37, 117, 252, 0.05);
+            transform: translateX(4px);
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .document-details {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .document-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Profile dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 10px;
+            width: 200px;
+            box-shadow: var(--shadow-hover);
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon" style="width: 60px; height: 60px; margin: 0 auto;"></div>
+            </div>
+            <h1 class="login-title">Quantum</h1>
+            <p class="login-subtitle">Tu billetera multiactivos segura</p>
+            
+            <div class="form-group">
+                <input type="email" class="form-input" id="loginEmail" placeholder="Correo electrónico" value="usuario@quantum.com">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-input" id="loginPassword" placeholder="Contraseña" value="password123">
+            </div>
+            <button class="btn btn-primary" onclick="login()">Iniciar Sesión</button>
+            
+            <p style="margin-top: 20px; color: var(--text-secondary); font-size: 14px;">
+                ¿No tienes cuenta? <a href="#" style="color: var(--primary);">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <div class="bg-effects">
+            <div class="bg-circle circle-1"></div>
+            <div class="bg-circle circle-2"></div>
+        </div>
+        
+        <div class="app-header">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                Quantum
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showNotificationCenter()">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button class="header-btn" onclick="syncData()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="header-btn" onclick="toggleDropdown()">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu" id="profileDropdown">
+                        <a href="#" class="dropdown-item" onclick="switchTab('profile')">
+                            <i class="fas fa-user-circle"></i> Mi Perfil
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Home Tab -->
+            <div class="tab-content active" id="home-tab">
+                <div class="balance-card">
+                    <div class="balance-label">Balance Total</div>
+                    <div class="balance-amount" id="balanceAmount">$124,852.40</div>
+                    <div class
